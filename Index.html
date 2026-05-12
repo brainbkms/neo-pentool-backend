@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>NEO·PENTOOL</title>
+  <style>
+    /* ===== RESET & BASE ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #05080f;
+      color: #e8edf5;
+      overflow-x: hidden;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+    /* ===== ANIMATED BACKGROUND ORBS ===== */
+    .bg-orbs {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .bg-orbs span {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.15;
+      animation: orbFloat 20s infinite ease-in-out;
+    }
+
+    .bg-orbs span:nth-child(1) {
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, #00f0ff, transparent);
+      top: -10%;
+      left: -10%;
+      animation-delay: 0s;
+    }
+    .bg-orbs span:nth-child(2) {
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, #a855f7, transparent);
+      bottom: -10%;
+      right: -10%;
+      animation-delay: -5s;
+    }
+    .bg-orbs span:nth-child(3) {
+      width: 350px;
+      height: 350px;
+      background: radial-gradient(circle, #f59e0b, transparent);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      animation-delay: -10s;
+    }
+
+    @keyframes orbFloat {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      25% { transform: translate(60px, -80px) scale(1.1); }
+      50% { transform: translate(-40px, 60px) scale(0.95); }
+      75% { transform: translate(80px, 40px) scale(1.05); }
+    }
+
+    /* ===== HEADER ===== */
+    .header {
+      position: relative;
+      z-index: 10;
+      padding: 20px 16px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(5, 8, 15, 0.72);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #00f0ff, #a855f7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 800;
+      color: #05080f;
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+    }
+
+    .logo h1 {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #e8edf5, #8b9dc3);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: #6b7a99;
+      background: rgba(255, 255, 255, 0.04);
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #22c55e;
+      animation: pulseDot 1.5s infinite;
+    }
+
+    @keyframes pulseDot {
+      0%, 100% { opacity: 1; box-shadow: 0 0 4px #22c55e; }
+      50% { opacity: 0.4; box-shadow: 0 0 10px #22c55e; }
+    }
+
+    /* ===== NAVIGATION ===== */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(5, 8, 15, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 8px 12px;
+      display: flex;
+      gap: 4px;
+      overflow-x: auto;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .nav::-webkit-scrollbar {
+      display: none;
+    }
+
+    .nav-btn {
+      flex: 1;
+      min-width: 60px;
+      padding: 8px 6px;
+      border: none;
+      background: transparent;
+      color: #6b7a99;
+      font-size: 10px;
+      font-weight: 500;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      font-family: inherit;
+    }
+
+    .nav-btn .nav-icon {
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .nav-btn.active {
+      background: linear-gradient(135deg, rgba(0, 240, 255, 0.12), rgba(168, 85, 247, 0.12));
+      color: #e8edf5;
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.05);
+    }
+
+    .nav-btn:active {
+      transform: scale(0.95);
+    }
+
+    /* ===== MAIN CONTENT ===== */
+    .main {
+      position: relative;
+      z-index: 5;
+      padding: 16px;
+      padding-bottom: 100px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .panel {
+      display: none;
+      animation: fadeSlideIn 0.35s ease-out;
+    }
+
+    .panel.active {
+      display: block;
+    }
+
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== GLASS CARD ===== */
+    .card {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      transition: border-color 0.3s ease;
+    }
+
+    .card:hover {
+      border-color: rgba(0, 240, 255, 0.15);
+    }
+
+    .card-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #8b9dc3;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-title .badge {
+      font-size: 9px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      background: rgba(0, 240, 255, 0.12);
+      color: #00f0ff;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    /* ===== FORM ELEMENTS ===== */
+    .input-group {
+      margin-bottom: 12px;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 11px;
+      font-weight: 500;
+      color: #6b7a99;
+      margin-bottom: 5px;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 12px 14px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      color: #e8edf5;
+      font-size: 14px;
+      font-family: inherit;
+      transition: all 0.3s ease;
+      outline: none;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      border-color: rgba(0, 240, 255, 0.4);
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.06);
+    }
+
+    input::placeholder, textarea::placeholder {
+      color: #4a5568;
+    }
+
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    select {
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7a99' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+    }
+
+    .row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .row .input-group {
+      flex: 1;
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #00c8d6, #7c3aed);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(0, 200, 214, 0.25);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 6px 30px rgba(0, 200, 214, 0.35);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.06);
+      color: #e8edf5;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-danger {
+      background: linear-gradient(135deg, #dc2626, #b91c1c);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(220, 38, 38, 0.25);
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, #16a34a, #15803d);
+      color: #fff;
+    }
+
+    .btn-sm {
+      padding: 8px 14px;
+      font-size: 11px;
+      width: auto;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* ===== OUTPUT / TERMINAL ===== */
+    .output {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      padding: 14px;
+      font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace;
+      font-size: 12px;
+      line-height: 1.6;
+      color: #a0b4d0;
+      max-height: 300px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+      margin-top: 12px;
+    }
+
+    .output .success { color: #22c55e; }
+    .output .error { color: #ef4444; }
+    .output .info { color: #38bdf8; }
+    .output .warn { color: #f59e0b; }
+
+    .output::-webkit-scrollbar {
+      width: 4px;
+    }
+    .output::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .output::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+    }
+
+    /* ===== SUB-TABS ===== */
+    .sub-tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 16px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .sub-tabs::-webkit-scrollbar { display: none; }
+
+    .sub-tab {
+      padding: 6px 14px;
+      border: none;
+      background: rgba(255, 255, 255, 0.04);
+      color: #6b7a99;
+      font-size: 11px;
+      font-weight: 500;
+      border-radius: 8px;
+      cursor: pointer;
+      white-space: nowrap;
+      font-family: inherit;
+      transition: all 0.3s ease;
+    }
+
+    .sub-tab.active {
+      background: rgba(0, 240, 255, 0.1);
+      color: #00f0ff;
+    }
+
+    .sub-panel { display: none; }
+    .sub-panel.active { display: block; }
+
+    /* ===== TOAST ===== */
+    .toast-container {
+      position: fixed;
+      bottom: 90px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: center;
+      pointer-events: none;
+    }
+
+    .toast {
+      padding: 10px 20px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 500;
+      background: rgba(5, 8, 15, 0.92);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #e8edf5;
+      animation: toastIn 0.3s ease-out;
+      pointer-events: auto;
+      max-width: 90vw;
+      text-align: center;
+    }
+
+    .toast.success { border-color: #22c55e; color: #22c55e; }
+    .toast.error { border-color: #ef4444; color: #ef4444; }
+    .toast.info { border-color: #38bdf8; color: #38bdf8; }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== CHECKBOX TOGGLE ===== */
+    .toggle-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .toggle-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: #8b9dc3;
+    }
+
+    .toggle-item input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: #00f0ff;
+    }
+
+    /* ===== TABLE ===== */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    .data-table th {
+      text-align: left;
+      padding: 8px 6px;
+      color: #6b7a99;
+      font-weight: 500;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .data-table td {
+      padding: 8px 6px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      color: #a0b4d0;
+    }
+
+    .copy-btn {
+      background: none;
+      border: none;
+      color: #6b7a99;
+      cursor: pointer;
+      font-size: 14px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+
+    .copy-btn:active {
+      color: #00f0ff;
+      background: rgba(0, 240, 255, 0.1);
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 480px) {
+      .header { padding: 14px 12px 10px; }
+      .logo h1 { font-size: 15px; }
+      .nav { padding: 6px 8px; }
+      .nav-btn { min-width: 50px; padding: 6px 4px; font-size: 9px; }
+      .nav-btn .nav-icon { font-size: 15px; }
+      .main { padding: 12px; }
+      .card { padding: 16px; border-radius: 16px; }
+      .row { flex-direction: column; gap: 0; }
+      .btn { padding: 10px 16px; font-size: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background Orbs -->
+  <div class="bg-orbs">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="logo">
+      <div class="logo-icon">⌘</div>
+      <h1>NEO·PENTOOL</h1>
+    </div>
+    <div class="status-badge">
+      <span class="live-dot"></span>
+      LIVE
+    </div>
+  </header>
+
+  <!-- Navigation -->
+  <nav class="nav" id="mainNav">
+    <button class="nav-btn active" data-panel="scan">
+      <span class="nav-icon">📡</span>
+      <span>Scan</span>
+    </button>
+    <button class="nav-btn" data-panel="ssh">
+      <span class="nav-icon">🔐</span>
+      <span>SSH</span>
+    </button>
+    <button class="nav-btn" data-panel="payloads">
+      <span class="nav-icon">💉</span>
+      <span>Payloads</span>
+    </button>
+    <button class="nav-btn" data-panel="webshell">
+      <span class="nav-icon">🌐</span>
+      <span>WebShell</span>
+    </button>
+    <button class="nav-btn" data-panel="vulnscan">
+      <span class="nav-icon">🔍</span>
+      <span>VulnScan</span>
+    </button>
+    <button class="nav-btn" data-panel="phish">
+      <span class="nav-icon">🎣</span>
+      <span>Phish</span>
+    </button>
+    <button class="nav-btn" data-panel="tracking">
+      <span class="nav-icon">📍</span>
+      <span>Track</span>
+    </button>
+    <button class="nav-btn" data-panel="sms">
+      <span class="nav-icon">💬</span>
+      <span>SMS</span>
+    </button>
+    <button class="nav-btn" data-panel="lookup">
+      <span class="nav-icon">👤</span>
+      <span>Lookup</span>
+    </button>
+    <button class="nav-btn" data-panel="stats">
+      <span class="nav-icon">📊</span>
+      <span>Stats</span>
+    </button>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main">
+
+    <!-- ============================================= -->
+    <!-- PANEL: SCAN                                  -->
+    <!-- ============================================= -->
+    <div class="panel active" id="panel-scan">
+      <div class="card">
+        <div class="card-title">🔍 Network Scan <span class="badge">Nmap-style</span></div>
+        <div class="input-group">
+          <label>Target (IP / CIDR / Domain)</label>
+          <input type="text" id="scanTarget" placeholder="192.168.1.1 or 10.0.0.0/24" value="scanme.nmap.org" />
+        </div>
+        <div class="row">
+          <div class="input-group">
+            <label>Port Range</label>
+            <input type="text" id="scanPorts" placeholder="22,80,443 or 1-1000" value="22,80,443" />
+          </div>
+          <div class="input-group">
+            <label>Speed</label>
+            <select id="scanSpeed">
+              <option value="fast">Fast (top 100)</option>
+              <option value="full" selected>Full</option>
+              <option value="stealth">Stealth</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="runScan()">🚀 Launch Scan</button>
+        <div class="output" id="scanOutput">Ready.</div>
+      </div>
+    </div>
+
+    <!-- ============================================= -->
+    <!-- PANEL: SSH                                   -->
+    <!-- ============================================= -->
+    <div class="panel" id="panel-ssh">
+      <div class="sub-tabs" id="sshTabs">
+        <button class="sub-tab active" data-sub="ssh-connect">Connect</button>
+        <button class="sub-tab" data-sub="ssh-exec">Exec</button>
+        <button class="sub-tab" data-sub="ssh-privesc">PrivEsc</button>
+        <button class="sub-tab" data-sub="ssh-persist">Persist</button>
+        <button class="sub-tab" data-sub="ssh-bruteforce">Brute</button>
+        <button class="sub-tab" data-sub="ssh-sessions">Sessions</button>
+      </div>
+
+      <!-- Connect -->
+      <div class="sub-panel active" id="sub-ssh-connect">
+        <div class="card">
+          <div class="card-title">🔌 SSH Connect</div>
+          <div class="row">
+            <div class="input-group">
+              <label>Host</label>
+              <input type="text" id="sshHost" placeholder="192.168.1.100" />
+            </div>
+            <div class="input-group">
+              <label>Port</label>
+              <input type="text" id="sshPort" placeholder="22" value="22" />
+            </div>
+          </div>
+          <div class="row">
+            <div class="input-group">
+              <label>Username</label>
+              <input type="text" id="sshUser" placeholder="root" />
+            </div>
+            <div class="input-group">
+              <label>Password / Key Path</label>
+              <input type="text" id="sshPass" placeholder="password or /path/key" />
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="sshConnect()">🔗 Connect</button>
+          <div class="output" id="sshConnectOutput">Ready.</div>
+        </div>
+      </div>
+
+      <!-- Exec -->
+      <div class="sub-panel" id="sub-ssh-exec">
+        <div class="card">
+          <div class="card-title">⚡ Remote Exec</div>
+          <div class="input-group">
+            <label>Session ID</label>
+            <input type="text" id="sshExecSession" placeholder="session_id from connect" />
+          </div>
+          <div class="input-group">
+            <label>Command</label>
+            <input type="text" id="sshExecCmd" placeholder="whoami; id; uname -a" />
+          </div>
+          <button class="btn btn-primary" onclick="sshExec()">▶ Execute</button>
+          <div class="output" id="sshExecOutput">Ready.</div>
+        </div>
+      </div>
+
+      <!-- PrivEsc -->
+      <div class="sub-panel" id="sub-ssh-privesc">
+        <div class="card">
+          <div class="card-title">⬆ Privilege Escalation</div>
+          <div class="input-group">
+            <label>Session ID</label>
+            <input type="text" id="sshPrivescSession" placeholder="session_id" />
+          </div>
+          <div class="input-group">
+            <label>Method</label>
+            <select id="sshPrivescMethod">
+              <option value="sudo">sudo -l abuse</option>
+              <option value="suid">SUID binaries</option>
+              <option value="cron">Cron jobs</option>
+              <option value="cap">Linux Capabilities</option>
+              <option value="auto">Auto (all checks)</option>
+            </select>
+          </div>
+          <button class="btn btn-danger" onclick="sshPrivesc()">⬆ Escalate</button>
+          <div class="output" id="sshPrivescOutput">Ready.</div>
+        </div>
+      </div>
+
+      <!-- Persist -->
+      <div class="sub-panel" id="sub-ssh-persist">
+        <div class="card">
+          <div class="card-title">🔗 Persistence</div>
+          <div class="input-group">
+            <label>Session ID</label>
+            <input type="text" id="sshPersistSession" placeholder="session_id" />
+          </div>
+          <div class="input-group">
+            <label>Method</label>
+            <select id="sshPersistMethod">
+              <option value="ssh_key">SSH authorized_key</option>
+              <option value="cron">Cron reverse shell</option>
+              <option value="systemd">Systemd service</option>
+              <option value="backdoor_user">Backdoor user</option>
+            </select>
+          </div>
+          <button class="btn btn-success" onclick="sshPersist()">🔗 Install</button>
+          <div class="output" id="sshPersistOutput">Ready.</div>
+        </div>
+      </div>
+
+      <!-- Brute Force -->
+      <div class="sub-panel" id="sub-ssh-bruteforce">
+        <div class="card">
+          <div class="card-title">🔨 SSH Brute Force</div>
+          <div class="input-group">
+            <label>Target Host</label>
+            <input type="text" id="sshBruteHost" placeholder="192.168.1.100" />
+          </div>
+          <div class="input-group">
+            <label>Port</label>
+            <input type="text" id="sshBrutePort" placeholder="22" value="22" />
+          </div>
+          <div class="row">
+            <div class="input-group">
+              <label>Username</label>
+              <input type="text" id="sshBruteUser" placeholder="root" />
+            </div>
+            <div class="input-group">
+              <label>Wordlist (passwords, comma-sep)</label>
+              <input type="text" id="sshBrutePass" placeholder="admin,root,1234,password,toor" />
+            </div>
+          </div>
+          <button class="btn btn-danger" onclick="sshBruteforce()">🔨 Attack</button>
+          <div class="output" id="sshBruteOutput">Ready.</div>
+        </div>
+      </div>
+
+      <!-- Sessions -->
+      <div class="sub-panel" id="sub-ssh-sessions">
+        <div class="card">
+          <div class="card-title">📋 Active Sessions</div>
+          <button class="btn btn-secondary" onclick="sshSessions()">🔄 Refresh</button>
+          <div class="output" id="sshSessionsOutput">Ready.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================= -->
+    <!-- PANEL: PAYLOADS                              -->
+    <!-- ============================================= -->
+    <div class="panel" id="panel-payloads">
+      <div class="card">
+        <div class="card-title">💉 Payload Generator <span class="badge">Reverse Shell</span></div>
+        <div class="input-group">
+          <label>Type</label>
+          <select id="payloadType">
+            <option value="bash">Bash</option>
+            <option value="python">Python</option>
+            <option value="php">PHP</option>
+            <option value="perl">Perl</option>
+            <option value="ruby">Ruby</option>
+            <option value="nc">Netcat</option>
+            <option value="powershell">PowerShell</option>
+            <option value="node">Node.js</option>
+            <option value="java">Java</option>
+            <option value="socat">Socat</option>
+          </select>
+        </div>
+        <div class="row">
+          <div class="input-group">
+            <label>LHOST (Your IP)</label>
+            <input type="text" id="payloadLhost" placeholder="10.0.0.1" />
+          </div>
+          <div class="input-group">
+            <label>LPORT</label>
+            <input type="text" id="payloadLport" placeholder="4444" value="4444" />
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="generatePayload()">⚡ Generate</button>
+        <div class="output" id="payloadOutput">Ready.</div>
+        <button class="btn btn-secondary btn-sm" style="margin-top:8px" onclick="copyPayload()">📋 Copy Payload</button>
+      </div>
+    </div>
+
+    <!-- ============================================= -->
+    <!-- PANEL: WEBSHELL                              -->
+    <!-- ============================================= -->
+    <div class="panel" id="panel-webshell">
+      <div class="sub-tabs" id="webshellTabs">
+        <button class="sub-tab active" data-sub="webshell-find">Find Params</button>
+        <button class="sub-tab" data-sub="webshell-exec">Exec</button>
+      </div>
+
+      <div class="sub-panel active" id="sub-webshell-find">
+        <div class="card">
+          <div class="card-title">🔍 Find WebShell Parameters</div>
+          <div class="input-group">
+            <label>Target URL</label>
+            <input type="text" id="webshellUrl" placeholder="http://target.com/shell.php" />
+          </div>
+          <button class="btn btn-primary" onclick="webshellFindParams()">🔍 Scan Params</button>
+          <div class="output" id="webshellFindOutput">Ready.</div>
+        </div>
+      </div>
+
+      <div class="sub-panel" id="sub-webshell-exec">
+        <div class="card">
+          <div class="card-title">⚡ WebShell Command</div>
+          <div class="input-group">
+            <label>WebShell URL</label>
+            <input type="text" id="webshellExecUrl" placeholder="http://target.com/shell.php?cmd=" />
+          </div>
+          <div class="input-group">
+            <label>Command</label>
+            <input type="text" id="webshellExecCmd" placeholder="whoami; id; ls -la" />
+          </div>
+          <div class="input-group">
+            <label>Parameter Name</label>
+            <input type="text" id="webshellExecParam" placeholder="cmd" value="cmd" />
+          </div>
+          <button class="btn btn-primary" onclick="webshellExec()">▶ Execute</button>
+          <div class="output" id="webshellExecOutput">Ready.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================= -->
+    <!-- PANEL: VULNSCAN                              -->
+    <!-- ============================================= -->
+    <div class="panel" id="panel-vulnscan">
+      <div class="card">
+        <div class="card-title">🔍 Vulnerability Scanner</div>
+        <div class="input-group">
+          <label>Target URL</label>
+          <input type="text" id="vulnTarget" placeholder="http://target.com/page.php?id=1" />
+        </div>
+        <div class="toggle-group">
+          <label class="toggle-item"><input type="checkbox" id="vulnXSS" checked /> XSS</label>
+          <label class="toggle-item"><input type="checkbox" id="vulnSQLi" checked /> SQLi</label>
+          <label class="toggle-item"><input type="checkbox" id="vulnLFI" checked /> LFI</label>
+          <label class="toggle-item"><input type="checkbox" id="vulnCrawl" /> Crawl</label>
+          <label class="toggle-item"><input type="checkbox" id="vulnFull" /> Full Scan</label>
+        </div>
+        <button class="btn btn-primary" onclick="runVulnScan()">🚀 Scan</button>
+        <div class="output" id="vulnOutput">Ready.</div>
+      </div>
+    </div>
+
+    <!-- ============================================= -->
+    <!-- PANEL: PHISH                                 -->
+    <!-- ============================================= -->
+    <div class="panel" id="panel-phish">
+      <div class="sub-tabs" id="phishTabs">
+        <button class="sub-tab active" data-sub="phish-create">Create</button>
+        <button class="sub-tab" data-sub="phish-captures">Captures</button>
+        <button class="sub-tab" data-sub="phish-campaigns">Campaigns</button>
+      </div>
+
+      <div class="sub-panel active" id="sub-phish-create">
+        <div class="card">
+          <div class="card-title">🎣 Create Phishing Page</div>
+          <div class="input-group">
+            <label>Template</label>
+            <select id="phishTemplate">
+              <option value="google">Google</option>
+              <option value="outlook">Outlook</option>
+              <option value="facebook">Facebook</option>
+              <option value="linkedin">LinkedIn</option>
+              <option value="custom">Custom</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Custom HTML (if Custom template)</label>
+            <textarea id="phishCustomHtml" placeholder="<html>...</html>"></textarea>
+          </div>
+          <button class="btn btn-primary" onclick="phishCreate()">🎣 Deploy Phish Page</button>
+          <div class="output" id="phishCreateOutput">Ready.</div>
+        </div>
+      </div>
+
+      <div class="sub-panel" id="sub-phish-captures">
+        <div class="card">
+          <div class="card-title">📥 Captured Credentials</div>
+          <button class="btn btn-secondary" onclick="phishCaptures()">🔄 Refresh</button>
+          <div class="output" id="phishCapturesOutput">Ready.</div>
+        </div>
+      </div>
+
+      <div class="sub-panel" id="sub-phish-campaigns">
+        <div class="card">
+          <div class="card-title">📊 Campaigns</div>
+          <button class="btn btn-secondary" onclick="phishCampaigns()">🔄 Refresh</button>
+          <div class="output" id="phishCampaignsOutput">Ready.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================= -->
+    <!-- PANEL: TRACKING                              -->
+    <!-- ============================================= -->
+    <div class="panel" id="panel-tracking">
+      <div class="card">
+        <div class="card-title">📍 Tracking Link Generator</div>
+        <div class="input-group">
+          <label>Campaign Name</label>
+          <input type="text" id="trackCampaign" placeholder="red_team_op1" />
+        </div>
+        <div class="input-group">
+          <label>Redirect URL (after capture)</label>
+          <input type="text" id="trackRedirect" placeholder="https://google.com" value="https://google.com" />
+        </div>
+        <button class="btn btn-primary" onclick="generateTracking()">🔗 Generate Link</button>
+        <div class="output" id="trackOutput">Ready.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📊 Click Data</div>
+        <button class="btn btn-secondary" onclick="trackingClicks()">🔄 Refresh</button>
+        <div class="output" id="trackClicksOutput">Ready.</div>
+      </div>
+    </div>
+
+    <!-- ============================================= -->
+    <!-- PANEL: SMS                                   -->
+    <!-- ============================================= -->
+    <div class="panel" id="panel-sms">
+      <div class="card">
+        <div class="card-title">💬 SMS Sender</div>
+        <div class="input-group">
+          <label>Phone Number (international format)</label>
+          <input type="text" id="smsTo" placeholder="+33612345678" />
+        </div>
+        <div class="input-group">
+          <label>Message</label>
+          <textarea id="smsBody" placeholder="Message content..."></textarea>
+        </div>
+        <button class="btn btn-primary" onclick="sendSms()">📤 Send SMS</button>
+        <div class="output" id="smsOutput">Ready.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📥 Incoming Messages</div>
+        <button class="btn btn-secondary" onclick="smsMessages()">🔄 Refresh</button>
+        <div class="output" id="smsMessagesOutput">Ready.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📞 Incoming Calls</div>
+        <button class="btn btn-secondary" onclick="callMessages()">🔄 Refresh</button>
+        <div class="output" id="callMessagesOutput">Ready.</div>
+      </div>
+    </div>
+
+    <!-- ============================================= -->
+    <!-- PANEL: LOOKUP                                -->
+    <!-- ============================================= -->
+    <div class="panel" id="panel-lookup">
+      <div class="card">
+        <div class="card-title">👤 Phone Lookup</div>
+        <div class="input-group">
+          <label>Phone Number</label>
+          <input type="text" id="lookupPhone" placeholder="+33612345678" />
+        </div>
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="lookupVeriphone()">🔍 Veriphone</button>
+          <button class="btn btn-secondary" onclick="lookupNumlookup()">🔍 NumLookup</button>
+        </div>
+        <div class="output" id="lookupOutput">Ready.</div>
+      </div>
+    </div>
+
+    <!-- ============================================= -->
+    <!-- PANEL: STATS                                 -->
+    <!-- ============================================= -->
+    <div class="panel" id="panel-stats">
+      <div class="card">
+        <div class="card-title">📊 Dashboard Stats</div>
+        <button class="btn btn-secondary" onclick="getStats()">🔄 Refresh</button>
+        <div class="output" id="statsOutput">Ready.</div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    // ===== CONFIG =====
+    // Backend Render URL
+    const API_BASE = 'https://neo-pentool.onrender.com';
+
+    // ===== TOAST =====
+    function showToast(msg, type) {
+      const c = document.getElementById('toastContainer');
+      const t = document.createElement('div');
+      t.className = 'toast ' + (type || 'info');
+      t.textContent = msg;
+      c.appendChild(t);
+      setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity 0.3s'; setTimeout(() => t.remove(), 300); }, 3000);
+    }
+
+    // ===== NAVIGATION =====
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        document.getElementById('panel-' + btn.dataset.panel).classList.add('active');
+      });
+    });
+
+    // ===== SUB-TABS =====
+    document.querySelectorAll('.sub-tabs').forEach(tabGroup => {
+      tabGroup.querySelectorAll('.sub-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          tabGroup.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          const parent = tab.closest('.panel') || document.querySelector('.panel.active');
+          const subId = tab.dataset.sub;
+          parent.querySelectorAll('.sub-panel').forEach(p => p.classList.remove('active'));
+          document.getElementById('sub-' + subId).classList.add('active');
+        });
+      });
+    });
+
+    // ===== API HELPER =====
+    async function apiCall(endpoint, body) {
+      try {
+        const res = await fetch(API_BASE + endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+        return await res.json();
+      } catch (e) {
+        return { error: 'Connection failed: ' + e.message };
+      }
+    }
+
+    async function apiGet(endpoint) {
+      try {
+        const res = await fetch(API_BASE + endpoint);
+        return await res.json();
+      } catch (e) {
+        return { error: 'Connection failed: ' + e.message };
+      }
+    }
+
+    // ===== SCAN =====
+    async function runScan() {
+      const out = document.getElementById('scanOutput');
+      out.textContent = 'Scanning...';
+      const res = await apiCall('/api/scan', {
+        target: document.getElementById('scanTarget').value,
+        ports: document.getElementById('scanPorts').value,
+        speed: document.getElementById('scanSpeed').value
+      });
+      if (res.error) { out.innerHTML = '<span class="error">' + res.error + '</span>'; showToast('Scan failed', 'error'); return; }
+      out.innerHTML = res.result.replace(/\n/g, '<br>').replace(/OPEN/g, '<span class="success">OPEN</span>').replace(/ALIVE/g, '<span class="success">ALIVE</span>').replace(/DEAD/g, '<span class="error">DEAD</span>');
+      showToast('Scan complete', 'success');
+    }
+
+    // ===== SSH =====
+    async function sshConnect() {
+      const out = document.getElementById('sshConnectOutput');
+      out.textContent = 'Connecting...';
+      const res = await apiCall('/api/ssh/connect', {
+        host: document.getElementById('sshHost').value,
+        port: parseInt(document.getElementById('sshPort').value),
+        username: document.getElementById('sshUser').value,
+        password: document.getElementById('sshPass').value
+      });
+      if (res.error) { out.innerHTML = '<span class="error">' + res.error + '</span>'; showToast('SSH failed', 'error'); return; }
+      out.innerHTML = '<span class="success">✅ Connected</span>\nSession ID: ' + res.session_id + '\nHost: ' + res.host + '\nUser: ' + res.username;
+      document.getElementById('sshExecSession').value = res.session_id;
+      document.getElementById('sshPrivescSession').value = res.session_id;
+      document.getElementById('sshPersistSession').value = res.session_id;
+      showToast('SSH connected', 'success');
+    }
+
+    async function sshExec() {
+      const out = document.getElementById('sshExecOutput');
+      out.textContent = 'Executing...';
+      const res = await apiCall('/api/ssh/exec', {
+        session_id: document.getElementById('sshExecSession').value,
+        command: document.getElementById('sshExecCmd').value
+      });
+      if (res.error) { out.innerHTML = '<span class="error">' + res.error + '</span>'; showToast('Exec failed', 'error'); return; }
+      out.textContent = res.output;
+      showToast('Command executed', 'success');
+    }
+
+    async function sshPrivesc() {
+      const out = document.getElementById('sshPrivescOutput');
+      out.textContent = 'Running privilege escalation...';
+      const res = await apiCall('/api/ssh/privesc', {
+        session_id: document.getElementById('sshPrivescSession').value,
+        method: document.getElementById('sshPrivescMethod').value
+      });
+      if (res.error) { out.innerHTML = '<span class="error">' + res.error + '</span>'; showToast('Privesc failed', 'error'); return; }
+      out.textContent = res.output;
+      showToast('Privesc scan complete', 'success');
+    }
+
+    async function sshPersist() {
+      const out = document.getElementById('sshPersistOutput');
+      out.textContent = 'Installing persistence...';
+      const res = await apiCall('/api/ssh/persist', {
+        session_id: document.getElementById('sshPersistSession').value,
+        method: document.getElementById('sshPersistMethod').value
+      });
+      if (res.error) { out.innerHTML = '<span class="error">' + res.error + '</span>'; showToast('Persistence failed', 'error'); return; }
+      out.textContent = res.output;
+      showToast('Persistence installed', 'success');
+    }
+
+    async function sshBruteforce() {
+      const out = document.getElementById('sshBruteOutput');
+      out.textContent = 'Brute forcing...';
+      const passwords = document.getElementById('sshBrutePass').value.split(',').map(p => p.trim());
+      const res = await apiCall('/api/ssh/bruteforce', {
+        host: document.getElementById('sshBruteHost').value,
+        port: parseInt(document.getElementById('sshBrutePort').value),
+        username: document.getElementById('sshBruteUser').value,
+        passwords: passwords
+      });
+      if (res.error) { out.innerHTML = '<span class="error">' + res.error + '</span>'; showToast('Bruteforce failed', 'error'); return; }
+      out.textContent = res.results ? res.results.join('\n') : JSON.stringify(res, null, 2);
+      if (res.password_found) { showToast('Password found: ' + res.password_found, 'success'); }
+    }
+
+    async function sshSessions() {
+      const out = document.getElementById('sshSessionsOutput');
+      out.textContent = 'Loading...';
+      const res = await apiGet('/api/ssh/sessions');
+      if (res.error) { out.innerHTML = '<span class="error">' + res.error + '</span>'; return; }
+      out.textContent = res.sessions.length ? JSON.stringify(res.sessions, null, 2) : 'No active sessions.';
+    }
+
+    // ===== PAYLOADS =====
+    let lastPayload = '';
+
+    async function generatePayload() {
+      const out = document.getElementById('payloadOutput');
+      const res = await apiCall('/api/payloads/generate', {
+        type: document.getElementById('payloadType').value,
+        lhost: document.getElementById('payloadLhost').value,
+        lport: parseInt(document.getElementById('payloadLport').value)
+      });
+      if (res.error) { out.innerHTML = '<span class="error">' + res.error + '</span>'; showToast('Generation failed', 'error'); return; }
+      lastPayload = res.payload;
+      out.innerHTML = '<span class="info"># ' + res.type + ' reverse shell</span>\n<span class="info"># Listen: ' + res.note + '</span>\n\n' + res.payload;
+      showToast('Payload generated', 'success');
+    }
+
+    function copyPayload() {
+      if (!lastPayload) { showToast('Generate a payload first', 'error'); return; }
+      navigator.clipboard.writeText(lastPayload).then(() => showToast('Payload copied', 'success'));
+    }
+
+    // ===== WEBSHELL =====
+    async function webshellFindParams() {
+      const out = document.getElementById('webshellFindOutput');
+      out.textContent = 'Scanning for parameters...';
+      const res = await apiCall('/api/webshell/findparams', { url: document.getElementById('webshellUrl').value });
+      if (res.error) { out.innerHTML = '<span class="error">' + res.error + '</span>'; showToast('Webshell scan failed', 'error'); return; }
+      out.innerHTML = res.params_found.length ? '<span class="success">Parameters found:</span>\n' + res.params_found.join(', ') : 'No executable parameters found.';
+      showToast('Found ' + res.params_found.length + ' params', 'success');
+    }
+
+    async function webshellExec() {
+      const out = document.getElementById('webshellExecOutput');
+      out.textContent = 'Executing...';
+      const res = await apiCall('/api/webshell/exec', {
+        url: document.getElementById('webshellExecUrl').value,
+        cmd: document.getElementById('webshellExecCmd').value,
+        param: document.getElementById('webshellExecParam').value
+      });
+      if (res.error) { out.innerHTML = '<span class="error">' + res.error + '</span>'; showToast('Webshell exec failed', 'error'); return; }
+      out.textContent = '[Status ' + res.status_code + ']\n' + res.output.slice(0, 3000);
+      showToast('Command executed', 'success');
+    }
+
+    // ===== VULNSCAN =====
+    async function runVulnScan() {
+      const out = document.getElementById('vulnOutput');
+      out.textContent = 'Scanning for vulnerabilities...';
+      const res = await apiCall('/api/vulnscan', {
+        url: document.getElementById('vulnTarget').value,
+        xss: document.getElementById('vulnXSS').checked,
+        sqli: document.getElementById('vulnSQLi').checked,
+        lfi: document.getElementById('vulnLFI').checked,
+        crawl: document.getElementById('vulnCrawl').checked,
+        full: document.getElementById('vulnFull').checked
+      });
+      if (res.error) { out.innerHTML = '<span class="error">' + res.error + '</span>'; showToast('Vuln scan failed', 'error'); return; }
+      if (res.vulnerabilities.length) {
+        out.innerHTML = '<span class="error">⚠ Found ' + res.vulnerabilities.length + ' vulnerabilities</span>\n' + JSON.stringify(res.vulnerabilities, null, 2);
+        showToast(res.vulnerabilities.length + ' vulnerabilities found', 'error');
+      } else {
+        out.innerHTML = '<span class="success">✅ No vulnerabilities detected</span>\n' + (res.note || '');
+        showToast('No vulnerabilities found', 'success');
+      }
+    }
+
+    // ===== PHISHING =====
+    async function phishCreate() {
+      const out = document.getElementById('phishCreateOutput');
+      out.textContent = 'Creating phishing page...';
+      const res = await apiCall('/api/phish/create', {
+        template: document.getElementById('phishTemplate').value,
+        custom_html: document.getElementById('phishCustomHtml').value
+      });
+      if (res.error) { out.innerHTML = '<span class="error">' + res.error + '</span>'; showToast('Phish create failed', 'error'); return; }
+      out.innerHTML = '<span class="success">✅ Page created</span>\nURL: ' + res.phish_url + '\nID: ' + res.page_id + '\n\n<span class="warn">⚠ Send this URL to your target</span>';
+      showToast('Phishing page ready', 'success');
+    }
+
+    async function phishCaptures() {
+      const out = document.getElementById('phishCapturesOutput');
+      out.textContent = 'Loading...';
+      const res = await apiGet('/api/phish/captures');
+      if (res.error) { out.innerHTML = '<span class="error">' + res.error + '</span>'; return; }
+      out.textContent = res.captures.length ? JSON.stringify(res.captures, null, 2) : 'No captures yet.';
+    }
+
+    async function phishCampaigns() {
+      const out = document.getElementById('phishCampaignsOutput');
+      out.textContent = 'Loading...';
+      const res = await apiGet('/api/phish/campaigns');
+      if (res.error) { out.innerHTML = '<span class="error">' + res.error + '</span>'; return; }
+      out.textContent = res.campaigns.length ? JSON.stringify(res.campaigns, null, 2) : 'No campaigns yet.';
+    }
+
+    // ===== TRACKING =====
+    async function generateTracking() {
+      const out = document.getElementById('trackOutput');
+      out.textContent = 'Generating tracking link...';
+      const res = await apiCall('/api/tracking/generate', {
+        campaign: document.getElementById('trackCampaign').value,
+        redirect: document.getElementById('trackRedirect').value
+      });
+      if (res.error) { out.innerHTML = '<span class="error">' + res.error + '</span>'; showToast('Tracking gen failed', 'error'); return; }
+      out.innerHTML = '<span class="success">✅ Tracking link created</span>\nURL: ' + res.tracking_url + '\nCampaign: ' + res.campaign + '\nID: ' + res.track_id;
+      showToast('Tracking link ready', 'success');
+    }
+
+    async function trackingClicks() {
+      const out = document.getElementById('trackClicksOutput');
+      out.textContent = 'Loading...';
+      const res = await apiGet('/api/tracking/clicks');
+      if (res.error) { out.innerHTML = '<span class="error">' + res.error + '</span>'; return; }
+      out.textContent = res.clicks.length ? JSON.stringify(res.clicks, null, 2) : 'No clicks yet.';
+    }
+
+    // ===== SMS =====
+    async function sendSms() {
+      const out = document.getElementById('smsOutput');
+      out.textContent = 'Sending...';
+      const res = await apiCall('/api/sms/send', {
+        to: document.getElementById('smsTo').value,
+        body: document.getElementById('smsBody').value
+      });
+      if (res.error) { out.innerHTML = '<span class="error">' + res.error + '</span>'; showToast('SMS failed', 'error'); return; }
+      out.textContent = JSON.stringify(res, null, 2);
+      showToast('SMS sent', 'success');
+    }
+
+    async function smsMessages() {
+      const out = document.getElementById('smsMessagesOutput');
+      out.textContent = 'Loading...';
+      const res = await apiGet('/api/sms/messages');
+      if (res.error) { out.innerHTML = '<span class="error">' + res.error + '</span>'; return; }
+      out.textContent = res.messages.length ? JSON.stringify(res.messages, null, 2) : 'No messages yet.';
+    }
+
+    async function callMessages() {
+      const out = document.getElementById('callMessagesOutput');
+      out.textContent = 'Loading...';
+      const res = await apiGet('/api/call/messages');
+      if (res.error) { out.innerHTML = '<span class="error">' + res.error + '</span>'; return; }
+      out.textContent = res.calls.length ? JSON.stringify(res.calls, null, 2) : 'No calls yet.';
+    }
+
+    // ===== LOOKUP =====
+    async function lookupVeriphone() {
+      const out = document.getElementById('lookupOutput');
+      out.textContent = 'Looking up...';
+      const res = await apiCall('/api/lookup/veriphone', { phone: document.getElementById('lookupPhone').value });
+      if (res.error) { out.innerHTML = '<span class="error">' + res.error + '</span>'; showToast('Lookup failed', 'error'); return; }
+      out.textContent = JSON.stringify(res, null, 2);
+      showToast('Lookup complete', 'success');
+    }
+
+    async function lookupNumlookup() {
+      const out = document.getElementById('lookupOutput');
+      out.textContent = 'Looking up...';
+      const res = await apiCall('/api/lookup/numlookup', { phone: document.getElementById('lookupPhone').value });
+      if (res.error) { out.innerHTML = '<span class="error">' + res.error + '</span>'; showToast('Lookup failed', 'error'); return; }
+      out.textContent = JSON.stringify(res, null, 2);
+      showToast('Lookup complete', 'success');
+    }
+
+    // ===== STATS =====
+    async function getStats() {
+      const out = document.getElementById('statsOutput');
+      out.textContent = 'Loading...';
+      const res = await apiGet('/api/stats');
+      if (res.error) { out.innerHTML = '<span class="error">' + res.error + '</span>'; return; }
+      out.textContent = JSON.stringify(res, null, 2);
+    }
+
+    // Auto-refresh SMS & calls every 15 seconds if panels are visible
+    setInterval(() => {
+      if (document.getElementById('panel-sms').classList.contains('active')) {
+        smsMessages();
+        callMessages();
+      }
+      if (document.getElementById('panel-phish').classList.contains('active')) {
+        // Optionnel: refresh captures automatically
+      }
+    }, 15000);
+  </script>
+
+</body>
+</html>
